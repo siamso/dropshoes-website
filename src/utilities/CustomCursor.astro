@@ -1,0 +1,83 @@
+---
+
+---
+
+<div id="1" class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+<div class="circle" data-cursor></div>
+
+
+<h1 class="text-center heading-1">THIS IS A TEXT</h1>
+
+<img src="https://picsum.photos/seed/picsum/200/300" alt="">
+
+<style lang="scss">
+	.circle {
+		width: 24px;
+		height: 24px;
+		position: absolute;
+		background-color: black;  // Reduced opacity
+		pointer-events: none;
+		border-radius: 50%;
+		top: 0;
+		z-index: 100; // Keeps blending effect // Smooth out edges with a blur effect
+	}
+
+	h1{
+		color: blue;
+	}
+
+	img{
+		display: block;
+		margin: 5rem;
+	}
+</style>
+
+<script>
+const circles = document.querySelectorAll('[data-cursor]');
+
+circles.forEach((circle) => {
+	circle.xPos = 0;
+	circle.yPos = 0;
+});
+
+const moves = { x: 0, y: 0};
+
+window.addEventListener('mousemove', (event) => {
+	moves.x = event.clientX,
+	moves.y = event.clientY;
+});
+
+(function animatedCursor() {
+	let x = moves.x;
+	let y = moves.y;
+
+	circles.forEach((circle, index) => {
+		circle.style.left = x - 12 + 'px';
+		circle.style.top = y - 12 + 'px';
+		circle.style.scale = (circles.length - index) / circles.length
+		circle.xPos = x;
+		circle.yPos = y;
+
+		const nextCircle = circles[index + 1] || circles[0];
+		x += (nextCircle.xPos - x) * 0.4;
+		y += (nextCircle.yPos - y) * 0.4;
+	})
+
+	requestAnimationFrame(animatedCursor);
+
+}());
+
+</script>

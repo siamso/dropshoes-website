@@ -1,0 +1,67 @@
+---
+
+---
+<div class="slider" aria-hidden="true">
+    <div class="text-wrapper">
+        <h2>Cautious!</h2>
+        <h2>Do Not Scroll</h2>
+        <h2>Cautious!</h2>
+        <h2>Do Not Scroll</h2>
+        <h2>Cautious!</h2>
+        <h2>Do Not Scroll</h2>
+        <h2>Cautious!</h2>
+        <h2>Do Not Scroll</h2>
+        <h2>Cautious!</h2>
+        <h2>Do Not Scroll</h2>
+        <h2>Cautious!</h2>
+        <h2>Do Not Scroll</h2>
+        <h2>Cautious!</h2>
+        <h2>Do Not Scroll</h2>
+        <h2>Cautious!</h2>
+        <h2>Do Not Scroll</h2>
+    </div>
+</div>
+
+<style lang="scss">
+	:root{
+		--gap: 2rem
+	}
+	.slider {
+	background-color: rgb(207, 196, 41);
+	border: 2px solid black;
+	padding: 10px 0;
+	overflow: hidden;
+	user-select: none;
+	transform: rotate(-0.5deg);
+	mask-image: linear-gradient(
+		to right,
+		transparent,
+		#000 10% 90%,
+		transparent
+	);
+
+	.text-wrapper {
+		display: flex;
+		gap: var(--gap);
+		align-items: center;
+		animation: slide 15s linear infinite;
+		animation-delay: 3s;
+		width: max-content;
+	}
+
+	h2 {
+		font-size: 2rem;
+		font-weight: bold;
+		white-space: nowrap;
+		color: black;
+		margin: 0px 20px;
+	}
+
+	@keyframes slide {
+		to {
+		transform: translateX(calc(-50% - var(--gap))); // Move half the distance, allowing for continuous flow
+		}
+	}
+	}
+
+</style>

@@ -136,6 +136,14 @@ $-clr-red-600: hsl(0 75% 40%);
 $-clr-red-700: hsl(0 75% 30%);
 $-clr-red-800: hsl(0 75% 17.5%);
 $-clr-red-900: hsl(0 75% 7.5%);
+//brand color
+$-clr-primary-100: hsl(53, 72, 82%);
+$-clr-primary-400: hsl(53, 72%, 52%);
+$-clr-primary-700: hsl(53, 72, 22%);
+
+$-clr-accent-100: hsl(47, 70%, 96%);
+$-clr-accent-400: hsl(31, 42%, 84%);
+$-clr-accent-700: hsl(31, 42%, 54%);
 
 $light: (
   "neutral": (
@@ -152,26 +160,14 @@ $light: (
     "1000": $-clr-black,
   ),
   "accent": (
-    "100": $-clr-deeppink-100,
-    "200": $-clr-deeppink-200,
-    "300": $-clr-deeppink-300,
-    "400": $-clr-deeppink-400,
-    "500": $-clr-deeppink-500,
-    "600": $-clr-deeppink-600,
-    "700": $-clr-deeppink-700,
-    "800": $-clr-deeppink-800,
-    "900": $-clr-deeppink-900,
+    "100": $-clr-accent-100,
+    "400": $-clr-accent-400,
+    "700": $-clr-accent-700,
   ),
   "primary": (
-    "100": $-clr-skyblue-100,
-    "200": $-clr-skyblue-200,
-    "300": $-clr-skyblue-300,
-    "400": $-clr-skyblue-400,
-    "500": $-clr-skyblue-500,
-    "600": $-clr-skyblue-600,
-    "700": $-clr-skyblue-700,
-    "800": $-clr-skyblue-800,
-    "900": $-clr-skyblue-900,
+    "100": $-clr-primary-100,
+    "400": $-clr-primary-400,
+    "700": $-clr-primary-700,
   ),
 );
 
@@ -190,26 +186,14 @@ $dark: (
     "000": $-clr-black,
   ),
   "accent": (
-    "900": $-clr-deeppink-900,
-    "800": $-clr-deeppink-800,
-    "700": $-clr-deeppink-700,
-    "600": $-clr-deeppink-600,
-    "500": $-clr-deeppink-500,
-    "400": $-clr-deeppink-400,
-    "300": $-clr-deeppink-300,
-    "200": $-clr-deeppink-200,
-    "100": $-clr-deeppink-100,
+    "700": $-clr-accent-700,
+    "400": $-clr-accent-400,
+    "100": $-clr-accent-100,
   ),
   "primary": (
-    "900": $-clr-skyblue-900,
-    "800": $-clr-skyblue-800,
-    "700": $-clr-skyblue-700,
-    "600": $-clr-skyblue-600,
-    "500": $-clr-skyblue-500,
-    "400": $-clr-skyblue-400,
-    "300": $-clr-skyblue-300,
-    "200": $-clr-skyblue-200,
-    "100": $-clr-skyblue-100,
+    "700": $-clr-primary-700,
+    "400": $-clr-primary-400,
+    "100": $-clr-primary-100,
   ),
 );
 

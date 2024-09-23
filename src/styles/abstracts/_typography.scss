@@ -1,15 +1,16 @@
-$-ff-sans: system-ui, sans-serif;
+$-ff-poppins: "Poppins", system-ui;
+$-ff-marker: "Permanent Marker", system-ui;
 $-ff-serif: serif;
 
-$font-family-base: $-ff-sans;
-$font-family-accent: $-ff-sans;
+$font-family-base: $-ff-poppins;
+$font-family-accent: $-ff-marker;
 
 $font-sizes: (
   "small": (
     "900": 3.75rem,
     "800": 2.25rem,
     "700": 1.75rem,
-    "600": 1.125rem,
+    "600": 1.5rem,
     "500": 1.125rem,
     "400": 1rem,
     "300": 0.925rem,

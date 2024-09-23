@@ -2,14 +2,14 @@
 @use "typography" as *;
 @use "sizes" as *;
 
-$active-theme: $light;
+$active-theme: $dark;
 $enable-media-query-dark-mode: false;
 
 // Contextual
 $color-text-default: $color-neutral-700;
-$color-background-default: $color-neutral-000;
-$color-text-interactive-default: $color-accent-400;
-$color-text-interactive-hover: $color-accent-500;
+$color-background-default: $color-accent-100;
+$color-text-interactive-default: $color-primary-400;
+$color-text-interactive-hover: $color-primary-700;
 
 // set to 0 to disable
 $letter-spacing-loose: 0;
@@ -43,7 +43,7 @@ $body-background-color: $color-background-default;
 $link-color: $color-text-interactive-default;
 $link-color-hover: $color-text-interactive-hover;
 
-$heading-font-family: $font-family-accent;
+$heading-font-family: $font-family-base;
 $heading-color-default: $color-neutral-900;
 $heading-font-weight: $font-weight-bold;
 $heading-letter-spacing: $letter-spacing-loose;

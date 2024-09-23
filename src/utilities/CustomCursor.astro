@@ -21,8 +21,6 @@
 
 <h1 class="text-center heading-1">THIS IS A TEXT</h1>
 
-<img src="https://picsum.photos/seed/picsum/200/300" alt="">
-
 <style lang="scss">
 	.circle {
 		width: 24px;
@@ -61,8 +59,8 @@ window.addEventListener('mousemove', (event) => {
 });
 
 (function animatedCursor() {
-	let x = moves.x;
-	let y = moves.y;
+	let x = moves.x + window.pageXOffset;
+	let y = moves.y + window.pageYOffset;
 
 	circles.forEach((circle, index) => {
 		circle.style.left = x - 12 + 'px';

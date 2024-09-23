@@ -6,10 +6,10 @@ $active-theme: $dark;
 $enable-media-query-dark-mode: false;
 
 // Contextual
-$color-text-default: $color-neutral-700;
+$color-text-default: $color-neutral-000;
 $color-background-default: $color-accent-100;
-$color-text-interactive-default: $color-primary-400;
-$color-text-interactive-hover: $color-primary-700;
+$color-text-interactive-default: $color-neutral-000;
+$color-text-interactive-hover: $color-primary-400;
 
 // set to 0 to disable
 $letter-spacing-loose: 0;
@@ -65,9 +65,9 @@ $hero-padding-block: clamp(15rem, 15vh, 20rem);
 $section-padding-block: clamp(5rem, 10vh, 6rem);
 
 $container-min-margin-inline: $size-4;
-$container-max-width: 64rem;
+$container-max-width: 75rem;
 $container-max-width-narrow: 40rem;
-$container-max-width-wide: 75rem;
+$container-max-width-medium: 64rem;
 
 // site header
 $site-header-background-color: $color-primary-300;

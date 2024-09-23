@@ -1,13 +1,123 @@
 ---
+import TextSlider from "../components/TextSlider.astro";
 import MainLayout from "../layouts/MainLayout.astro";
 
 ---
 
-<MainLayout>
-    
+<MainLayout title="DropShoes - Shop for Shoes">
+    <section class="section">
+        <div class="container">
+            <div class="title">
+                <h1>Spring,</h1>
+                <div class="text-wrapper">
+                    <h1>SUMMER</h1>
+                    <h2>COLL.<br>2024</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="layout">
+                <div class="portrait__card">
+                    <div class="image-container">
+                        <img src="/images/heroPic2.jpg" alt="figure">
+                    </div>
+                    <div class="text-wrapper">
+                        <span>(01)</span>
+                        <span>Women</span>
+                    </div>
+                </div>
+                <div class="portrait__card">
+                    <div class="image-container">
+                        <img src="/images/heroPic4.jpg" alt="figure">
+                    </div>
+                    <div class="text-wrapper">
+                        <span class="count">(02)</span>
+                        <span class="gender">Men</span>
+                    </div>
+                </div>
+                <button>
+                    Explore
+                    <i class='border bx bx-right-arrow-alt'></i>
+                </button>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <TextSlider/>
+    </section>
+    <section class="section">
+        <div class="container">
+            <h1></h1>
+        </div>
+    </section>
 </MainLayout>
 
 <style lang="scss">
+    .title{
+        text-align: end;
+        font-size: 14rem;
+        letter-spacing: -5px;
+        word-spacing: 0px;
+        line-height: 230px;
+        font-weight: bold;
+        user-select: none;
+
+        .text-wrapper{
+            display: flex;
+            align-items: center;
+            justify-content: end;
+
+            h2{
+                font-size: 4rem;
+                letter-spacing: -2px;
+                line-height: 50px;
+                margin-inline-start: 2rem;
+            }
+        }
+    }
+    .layout{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .portrait__card{
+        overflow: hidden;
+
+        .image-container{
+            border: 2px solid black;
+
+            img{
+                object-fit: cover;
+            }
+        }
+
+        .text-wrapper{
+            .count{
+                display: inline-block;
+                align-items: start;
+            }
+            .gender{
+                display: inline-block;
+                align-items: center;
+            }
+        }
+    }
+    button{
+        grid-column: span 2;
+        justify-self: end;
+        background-color: transparent;
+        border: none;
+        font-size: 3rem;
+
+        .border{
+            border: 2px solid black;
+            border-radius: 50%;
+            padding: .4rem;
+        }
+    }
 
 </style>
 

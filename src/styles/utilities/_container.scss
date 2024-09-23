@@ -5,14 +5,14 @@
   --max-width: #{$container-max-width};
 
   width: min(100% - var(--padding), var(--max-width));
-  margin-inline: auto;
+  margin-inline-start: 30rem;
 }
 
 .container[data-type="narrow"] {
   --max-width: #{$container-max-width-narrow};
 }
-.container[data-type="wide"] {
-  --max-width: #{$container-max-width-wide};
+.container[data-type="medium"] {
+  --max-width: #{$container-max-width-medium};
 }
 .container[data-type="full-bleed"] {
   --max-width: 100%;

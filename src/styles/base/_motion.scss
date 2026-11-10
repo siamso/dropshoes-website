@@ -1,0 +1,93 @@
+@use "../abstracts/" as *;
+
+// Scroll reveal. Hidden states only apply once JS is known to be running,
+// so the page stays readable without it.
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(2.5rem);
+  transition: opacity 0.8s ease, transform 0.9s $ease-out;
+  transition-delay: var(--d, 0ms);
+}
+
+.js [data-reveal="fade"] {
+  transform: none;
+}
+
+// Image wipe: the frame stays put (so it can still be observed) and the
+// picture inside slides up into it while settling from a slight zoom.
+.js [data-reveal="clip"] {
+  opacity: 1;
+  transform: none;
+
+  img {
+    clip-path: inset(100% 0 0 0);
+    transform: scale(1.25);
+    transition: clip-path 1.1s $ease-in-out, transform 1.6s $ease-out;
+    transition-delay: var(--d, 0ms);
+  }
+}
+
+.js [data-reveal].is-inview {
+  opacity: 1;
+  transform: none;
+
+  img {
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: rotate(-12deg) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes float {
+  50% {
+    transform: translateY(-3%) rotate(-2deg);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+// Ink Mode spreads as a circle (driven from app.ts)
+.is-theming::view-transition-old(root),
+.is-theming::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}

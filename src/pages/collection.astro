@@ -1,0 +1,211 @@
+---
+import { Image } from "astro:assets";
+import BigTitle from "../components/BigTitle.astro";
+import Icon from "../components/Icon.astro";
+import TextSlider from "../components/TextSlider.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import { site } from "../data/site";
+import lookWomen from "../assets/images/look-women.jpg";
+import lookMen from "../assets/images/look-men.jpg";
+import lookLeather from "../assets/images/look-leather.jpg";
+import lookStreet from "../assets/images/look-street.jpg";
+
+const looks = [
+  {
+    title: "Soft riot",
+    text: "Peach leather against a red wall. Dressed down, turned up — the tracksuit does the talking and the shoes finish the sentence.",
+    image: lookWomen,
+    alt: "Woman in a black tracksuit and peach sneakers sitting on a sofa against a red wall",
+    href: "/shop?category=women",
+    cta: "Shop women",
+    shape: "portrait",
+  },
+  {
+    title: "Red alert",
+    text: "Washed denim, grey concrete, and one very loud pair of knit runners. Everything else in the outfit is there to get out of the way.",
+    image: lookMen,
+    alt: "Man in light jeans and bright red sneakers sitting on a concrete wall",
+    href: "/shop?category=men",
+    cta: "Shop men",
+    shape: "portrait",
+  },
+  {
+    title: "After hours",
+    text: "Black heeled boots in front of a wall that refuses to be ignored. For the nights that start on the pavement.",
+    image: lookStreet,
+    alt: "Person in black heeled boots standing in front of a colourful graffiti wall",
+    href: "/shop?category=women",
+    cta: "Shop women",
+    shape: "landscape",
+  },
+  {
+    title: "Slow Sunday",
+    text: "Polished leather, feet up, nowhere to be. The loafer is the whole plan.",
+    image: lookLeather,
+    alt: "Polished brown leather shoes resting on a patterned rug",
+    href: "/shop/slow-sunday",
+    cta: "Shop the loafer",
+    shape: "landscape",
+  },
+];
+---
+
+<MainLayout title="Collection - DropShoes" description="The Dropshoes Spring/Summer lookbook: four looks, shot on the street.">
+  <section class="section hero">
+    <div class="container">
+      <BigTitle lines={["The", "LOOKBOOK"]} note={site.season.note} />
+      <p class="lede intro" data-reveal>
+        Four looks for the warm months, shot where the shoes are actually worn: on sofas, walls and pavements.
+      </p>
+    </div>
+  </section>
+
+  <div class="container looks">
+    {
+      looks.map((look, index) => (
+        <article class:list={["look", look.shape, { flip: index % 2 === 1 }]}>
+          <a class="look__image" href={look.href} data-reveal="clip" tabindex="-1" aria-hidden="true">
+            <Image
+              src={look.image}
+              alt=""
+              widths={[640, 1000, 1500]}
+              sizes="(min-width: 65em) 40rem, 95vw"
+              loading={index === 0 ? "eager" : "lazy"}
+            />
+          </a>
+          <div class="look__text" data-reveal style="--d: 150ms">
+            <span class="look__count" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <h2>{look.title}</h2>
+            <p>{look.text}</p>
+            <a class="arrow-link" data-size="small" href={look.href}>
+              {look.cta}
+              <span class="arrow-link__icon"><Icon name="arrow-right" /></span>
+            </a>
+            <span class="visually-hidden">Photo: {look.alt}</span>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <section class="section">
+    <TextSlider items={["Spring", "Summer", "Coll. 2024"]} />
+  </section>
+
+  <section class="section">
+    <div class="container outro" data-reveal>
+      <h2>Seen enough?<br />Go get a <span class="marker">pair.</span></h2>
+      <a class="arrow-link" href="/shop">
+        Explore
+        <span class="arrow-link__icon"><Icon name="arrow-right" /></span>
+      </a>
+    </div>
+  </section>
+</MainLayout>
+
+<style lang="scss">
+  @use "../styles/abstracts" as *;
+
+  .hero {
+    padding-block-start: clamp(2.5rem, 9vw, 6rem);
+  }
+
+  .intro {
+    margin-block-start: 2rem;
+    margin-inline-start: auto;
+  }
+
+  .looks {
+    display: grid;
+    gap: clamp(4rem, 10vw, 9rem);
+  }
+
+  .look {
+    display: grid;
+    gap: 1.5rem clamp(1.5rem, 5vw, 4rem);
+    align-items: end;
+
+    @include mq(large) {
+      grid-template-columns: 1.2fr 1fr;
+
+      &.landscape {
+        grid-template-columns: 1.7fr 1fr;
+      }
+
+      &.flip .look__image {
+        order: 2;
+      }
+
+      &.flip {
+        grid-template-columns: 1fr 1.2fr;
+      }
+
+      &.flip.landscape {
+        grid-template-columns: 1fr 1.7fr;
+      }
+    }
+
+    &__image {
+      display: block;
+      aspect-ratio: 4 / 5;
+      border: 2px solid var(--clr-ink);
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      &:hover.is-inview img {
+        transform: scale(1.05);
+      }
+    }
+
+    &.landscape &__image {
+      aspect-ratio: 3 / 2;
+    }
+
+    &__text {
+      display: grid;
+      gap: 1rem;
+      justify-items: start;
+
+      h2 {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-weight: bold;
+        letter-spacing: -0.035em;
+        line-height: 0.95;
+        text-transform: uppercase;
+      }
+
+      p {
+        max-width: 40ch;
+      }
+    }
+
+    &__count {
+      font-size: clamp(4rem, 12vw, 9rem);
+      font-weight: bold;
+      letter-spacing: -0.04em;
+      line-height: 0.8;
+      color: transparent;
+      -webkit-text-stroke: 2px var(--clr-ink);
+    }
+  }
+
+  .outro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+
+    h2 {
+      font-size: clamp(2.5rem, 8vw, 6.5rem);
+      font-weight: bold;
+      letter-spacing: -0.035em;
+      line-height: 0.95;
+    }
+  }
+</style>

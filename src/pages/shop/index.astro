@@ -1,0 +1,192 @@
+---
+import BigTitle from "../../components/BigTitle.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import TextSlider from "../../components/TextSlider.astro";
+import MainLayout from "../../layouts/MainLayout.astro";
+import { products } from "../../data/products";
+
+const filters = [
+  { value: "all", label: "All" },
+  { value: "women", label: "Women" },
+  { value: "men", label: "Men" },
+];
+---
+
+<MainLayout title="Shop - DropShoes" description="Shop every Dropshoes pair: sneakers, trail shoes and loafers for women and men.">
+  <section class="section hero">
+    <div class="container">
+      <BigTitle lines={["Shop,", "ALL OF IT"]} />
+    </div>
+  </section>
+
+  <section>
+    <div class="container" data-shop>
+      <div class="toolbar" data-reveal>
+        <div class="filters" role="group" aria-label="Filter by category">
+          {
+            filters.map((filter) => (
+              <button type="button" data-filter={filter.value} aria-pressed={filter.value === "all" ? "true" : "false"}>
+                {filter.label}
+              </button>
+            ))
+          }
+        </div>
+        <p class="count" aria-live="polite"><span data-shop-count>{products.length}</span> pairs</p>
+        <label class="sort">
+          <span>Sort</span>
+          <select data-sort>
+            <option value="featured">Featured</option>
+            <option value="low">Price: low to high</option>
+            <option value="high">Price: high to low</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="grid" data-shop-grid>
+        {products.map((product, index) => <ProductCard {product} {index} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <TextSlider items={["Small batches", "Gone when they're gone"]} />
+  </section>
+</MainLayout>
+
+<style lang="scss">
+  @use "../../styles/abstracts" as *;
+
+  .hero {
+    padding-block-start: clamp(2.5rem, 9vw, 6rem);
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    padding-block: 1rem;
+    margin-block-end: 2rem;
+    border-block: 2px solid var(--clr-ink);
+  }
+
+  .filters {
+    display: flex;
+    gap: 0.5rem;
+
+    button {
+      padding: 0.4rem 1.1rem;
+      border: 2px solid var(--clr-ink);
+      border-radius: 99px;
+      background: transparent;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      letter-spacing: 0.08em;
+      transition: background-color 250ms ease, color 250ms ease, transform 250ms $ease-out;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+
+      &[aria-pressed="true"] {
+        background-color: var(--clr-ink);
+        color: var(--clr-bg);
+      }
+    }
+  }
+
+  .count {
+    margin-inline-start: auto;
+    color: var(--clr-muted);
+  }
+
+  .sort {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    span {
+      font-size: 0.875rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    select {
+      padding: 0.4rem 0.5rem;
+      border: 2px solid var(--clr-ink);
+      background-color: var(--clr-bg);
+      color: var(--clr-ink);
+    }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
+    gap: 2.5rem 1.5rem;
+
+    :global([hidden]) {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const shop = document.querySelector<HTMLElement>("[data-shop]")!;
+  const grid = shop.querySelector<HTMLElement>("[data-shop-grid]")!;
+  const cards = [...grid.querySelectorAll<HTMLElement>(".product-card")];
+  const buttons = shop.querySelectorAll<HTMLButtonElement>("[data-filter]");
+  const sort = shop.querySelector<HTMLSelectElement>("[data-sort]")!;
+  const count = shop.querySelector<HTMLElement>("[data-shop-count]")!;
+  const root = document.documentElement;
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const params = new URLSearchParams(location.search);
+  let category = ["women", "men"].includes(params.get("category") || "") ? params.get("category")! : "all";
+
+  function apply() {
+    const by = sort.value;
+    const sorted = [...cards].sort((a, b) =>
+      by === "featured"
+        ? Number(a.dataset.order) - Number(b.dataset.order)
+        : (Number(a.dataset.price) - Number(b.dataset.price)) * (by === "low" ? 1 : -1),
+    );
+    let visible = 0;
+    sorted.forEach((card) => {
+      card.hidden = category !== "all" && card.dataset.category !== category;
+      if (!card.hidden) visible++;
+      // already on screen: skip the scroll-reveal for anything shuffled in
+      card.classList.add("is-inview");
+      card.style.setProperty("--d", "0ms");
+      grid.append(card);
+    });
+    count.textContent = String(visible);
+    buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.filter === category)));
+  }
+
+  // Cards glide to their new places where the browser supports it.
+  function update() {
+    if (reduced || !document.startViewTransition) return apply();
+    root.classList.add("is-filtering");
+    document.startViewTransition(apply).finished.finally(() => root.classList.remove("is-filtering"));
+  }
+
+  buttons.forEach((button) =>
+    button.addEventListener("click", () => {
+      category = button.dataset.filter!;
+      const url = new URL(location.href);
+      if (category === "all") url.searchParams.delete("category");
+      else url.searchParams.set("category", category);
+      history.replaceState(null, "", url);
+      update();
+    }),
+  );
+  sort.addEventListener("change", update);
+
+  if (category !== "all") {
+    cards.forEach((card) => (card.hidden = card.dataset.category !== category));
+    count.textContent = String(cards.filter((card) => !card.hidden).length);
+    buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.filter === category)));
+  }
+</script>

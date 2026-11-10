@@ -1,0 +1,143 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import { formatPrice, type Product } from "../data/products";
+
+interface Props {
+  product: Product;
+  index: number;
+  reveal?: boolean;
+}
+const { product, index, reveal = true } = Astro.props;
+const count = String(index + 1).padStart(2, "0");
+---
+
+<a
+  class="product-card"
+  href={`/shop/${product.slug}`}
+  data-category={product.category}
+  data-price={product.price}
+  data-order={index}
+  data-reveal={reveal ? "" : undefined}
+  style={`--d: ${(index % 3) * 90}ms; --name: card-${product.slug}`}
+  draggable="false"
+>
+  <div class="tile" style={`background-color: ${product.tile}`}>
+    {product.tag && <span class="tag">{product.tag}</span>}
+    <Image
+      src={product.image}
+      alt={`${product.name} shoe`}
+      widths={[320, 520, 760]}
+      sizes="(min-width: 65em) 24rem, (min-width: 30em) 45vw, 90vw"
+      draggable="false"
+    />
+    <span class="view">View <Icon name="arrow-right" /></span>
+  </div>
+  <div class="meta">
+    <span class="count">({count})</span>
+    <h3>{product.name}</h3>
+    <span class="price">{formatPrice(product.price)}</span>
+  </div>
+  <p class="type">{product.category} · {product.type}</p>
+</a>
+
+<style lang="scss">
+  @use "../styles/abstracts" as *;
+
+  .product-card {
+    display: block;
+    text-decoration: none;
+    color: var(--clr-ink);
+
+    :global(.is-filtering) & {
+      view-transition-name: var(--name);
+    }
+  }
+
+  .tile {
+    position: relative;
+    aspect-ratio: 1;
+    border: 2px solid var(--clr-ink);
+    overflow: hidden;
+    color: #000;
+    transition: transform 350ms $ease-out, box-shadow 350ms $ease-out;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 600ms $ease-out;
+    }
+  }
+
+  .tag {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 1;
+    padding: 0.2rem 0.6rem;
+    background-color: var(--clr-tape);
+    border: 2px solid #000;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transform: rotate(-4deg);
+  }
+
+  .view {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: #000;
+    color: hsl(47 70% 96%);
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    transform: translateY(101%);
+    transition: transform 350ms $ease-in-out;
+  }
+
+  .product-card:is(:hover, :focus-visible) {
+    .tile {
+      transform: translate(-4px, -4px);
+      box-shadow: 6px 6px 0 var(--clr-ink);
+    }
+
+    img {
+      transform: translateY(-7%) rotate(-7deg) scale(1.08);
+    }
+
+    .view {
+      transform: none;
+    }
+  }
+
+  .meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-block-start: 0.75rem;
+
+    h3 {
+      font-weight: bold;
+      font-size: 1.125rem;
+      line-height: 1.2;
+    }
+
+    .price {
+      margin-inline-start: auto;
+      font-weight: bold;
+    }
+  }
+
+  .type {
+    font-size: 0.875rem;
+    color: var(--clr-muted);
+    text-transform: capitalize;
+  }
+</style>

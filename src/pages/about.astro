@@ -1,0 +1,231 @@
+---
+import { Image } from "astro:assets";
+import BigTitle from "../components/BigTitle.astro";
+import Icon from "../components/Icon.astro";
+import TextSlider from "../components/TextSlider.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import lookLeather from "../assets/images/look-leather.jpg";
+
+const values = [
+  { title: "Small batches", text: "We make a few hundred pairs of each style. It keeps quality high and leftovers close to zero." },
+  { title: "Honest materials", text: "Suede, canvas, leather and rubber we'd be happy to wear for years — and we say exactly what's in every pair." },
+  { title: "No noise", text: "No fake sales, no countdown timers. A fair price from day one, until the drop sells out." },
+];
+
+const faqs = [
+  { id: "shipping", title: "Shipping", text: "Orders ship within two working days. Shipping is free on orders over $150 and every parcel is tracked." },
+  { id: "returns", title: "Returns", text: "You have 30 days to return unworn pairs in their original box for a full refund." },
+  { id: "sizing", title: "Sizing", text: "All pairs are listed in EU sizes. Each product page says whether a style runs large, small or true to size." },
+];
+---
+
+<MainLayout title="About - DropShoes" description="Dropshoes makes shoes in small batches and sells them until they're gone. Here's why.">
+  <section class="section hero">
+    <div class="container">
+      <BigTitle lines={["Fewer,", "BETTER"]} note={["PAIRS.", "ALWAYS"]} />
+    </div>
+  </section>
+
+  <section>
+    <div class="container intro">
+      <p class="lede" data-reveal>
+        Dropshoes started with a simple complaint: too many shoes, not enough <span class="marker">good ones.</span>
+      </p>
+      <div class="prose" data-reveal style="--d: 120ms">
+        <p>
+          So we do it the other way round. A handful of styles each season, made in small runs, released
+          as a drop. When a pair sells out we move on to the next idea instead of restocking it forever.
+        </p>
+        <p>
+          It means less waste, fewer warehouses and shoes that feel like a find rather than a default.
+          It also means you might miss one. Sorry about that.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="wide-image" data-reveal="clip">
+        <Image
+          src={lookLeather}
+          alt="Polished brown leather shoes resting on a patterned rug"
+          widths={[800, 1400, 2000]}
+          sizes="(min-width: 65em) 75rem, 95vw"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <ul class="stats" role="list">
+        <li data-reveal><strong><span data-count="6">6</span></strong><span>styles this season</span></li>
+        <li data-reveal style="--d: 100ms"><strong><span data-count="300">300</span></strong><span>pairs per batch</span></li>
+        <li data-reveal style="--d: 200ms"><strong><span data-count="30">30</span></strong><span>days to return</span></li>
+        <li data-reveal style="--d: 300ms"><strong><span data-count="0">0</span></strong><span>restocks, ever</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2 class="section-head__title">How we<br />work</h2>
+      </div>
+      <ol class="values" role="list">
+        {
+          values.map((value, index) => (
+            <li data-reveal style={`--d: ${index * 100}ms`}>
+              <span class="count">({String(index + 1).padStart(2, "0")})</span>
+              <h3>{value.title}</h3>
+              <p>{value.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <TextSlider items={["Fewer pairs", "Better pairs"]} reverse tilt={0.5} />
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2 class="section-head__title">Good to<br />know</h2>
+      </div>
+      <dl class="faq">
+        {
+          faqs.map((faq, index) => (
+            <div id={faq.id} data-reveal style={`--d: ${index * 100}ms`}>
+              <dt>{faq.title}</dt>
+              <dd>{faq.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <a class="arrow-link cta" href="/shop" data-reveal>
+        Explore
+        <span class="arrow-link__icon"><Icon name="arrow-right" /></span>
+      </a>
+    </div>
+  </section>
+</MainLayout>
+
+<style lang="scss">
+  @use "../styles/abstracts" as *;
+
+  .hero {
+    padding-block-start: clamp(2.5rem, 9vw, 6rem);
+  }
+
+  .intro {
+    display: grid;
+    gap: 2rem clamp(2rem, 6vw, 5rem);
+
+    @include mq(large) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .lede {
+      font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+      font-weight: bold;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      max-width: 18ch;
+    }
+  }
+
+  .wide-image {
+    aspect-ratio: 21 / 9;
+    border: 2px solid var(--clr-ink);
+    overflow: hidden;
+
+    @media (max-width: 40em) {
+      aspect-ratio: 4 / 3;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.5rem;
+
+    @include mq(medium) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    li {
+      display: grid;
+      padding-block-start: 1rem;
+      border-block-start: 2px solid var(--clr-ink);
+    }
+
+    strong {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: bold;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  .values {
+    display: grid;
+    border-block-start: 2px solid var(--clr-ink);
+
+    li {
+      display: grid;
+      gap: 0.25rem 2rem;
+      padding-block: 1.75rem;
+      border-block-end: 2px solid var(--clr-ink);
+      transition: padding-inline-start 400ms $ease-out;
+
+      @include mq(medium) {
+        grid-template-columns: 5rem 1fr 1.4fr;
+        align-items: baseline;
+
+        &:hover {
+          padding-inline-start: 1rem;
+        }
+      }
+    }
+
+    h3 {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: bold;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+  }
+
+  .faq {
+    display: grid;
+    gap: 2rem;
+
+    @include mq(medium) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    dt {
+      font-family: $font-family-accent;
+      font-size: 1.75rem;
+      margin-block-end: 0.5rem;
+    }
+  }
+
+  .cta {
+    display: flex;
+    width: fit-content;
+    margin-block-start: 3rem;
+    margin-inline-start: auto;
+  }
+</style>

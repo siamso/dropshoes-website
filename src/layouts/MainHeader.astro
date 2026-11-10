@@ -1,12 +1,28 @@
 ---
-const {title} = Astro.props
-import "../styles/main.scss"
+import "../styles/main.scss";
+import { site } from "../data/site";
+
+const { title, description = site.description } = Astro.props;
 ---
+
 <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preload" href="/fonts/poppins/Poppins-Bold.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/PermanentMarker-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <meta name="generator" content={Astro.generator} />
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <title>{title}</title>
+  <!-- Runs before first paint so Ink Mode never flashes the wrong colours. -->
+  <script is:inline>
+    document.documentElement.classList.add("js");
+    try {
+      var theme = localStorage.getItem("dropshoes-theme");
+      if (theme) document.documentElement.dataset.theme = theme;
+    } catch (e) {}
+  </script>
 </head>

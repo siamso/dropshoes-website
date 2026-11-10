@@ -31,3 +31,32 @@
     }
   }
 }
+
+// Theme: "paper" is the default look, "ink" is what the Ink Mode button switches to.
+:root {
+  --clr-bg: hsl(47 70% 96%);
+  --clr-ink: hsl(0 0% 0%);
+  --clr-muted: hsl(0 0% 36%);
+  --clr-tape: rgb(207 196 41);
+  --clr-highlight: rgb(255 166 0 / 0.5);
+  --clr-tile: hsl(31 42% 84%);
+  --clr-on-tile: hsl(0 0% 0%);
+
+  --gutter: clamp(1rem, 3vw, 2.5rem);
+  --sidebar-w: 0px;
+  --topbar-h: 3.75rem;
+  color-scheme: light;
+
+  @include mq(medium) {
+    --sidebar-w: 6.25rem;
+    --topbar-h: 0px;
+  }
+}
+
+:root[data-theme="ink"] {
+  --clr-bg: hsl(0 0% 7.5%);
+  --clr-ink: hsl(47 70% 96%);
+  --clr-muted: hsl(40 8% 66%);
+  --clr-highlight: rgb(255 166 0 / 0.75);
+  color-scheme: dark;
+}

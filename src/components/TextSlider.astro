@@ -1,67 +1,76 @@
 ---
-
+interface Props {
+  items?: string[];
+  reverse?: boolean;
+  tilt?: number;
+}
+const {
+  items = ["Cautious!", "Do Not Scroll"],
+  reverse = false,
+  tilt = -0.5,
+} = Astro.props;
+// Each group is wide enough to fill the screen; two groups make the loop seamless.
+const repeats = Math.max(2, Math.ceil(16 / items.length));
+const group = Array.from({ length: repeats }, () => items).flat();
 ---
-<div class="slider" aria-hidden="true">
-    <div class="text-wrapper">
-        <h2>Cautious!</h2>
-        <h2>Do Not Scroll</h2>
-        <h2>Cautious!</h2>
-        <h2>Do Not Scroll</h2>
-        <h2>Cautious!</h2>
-        <h2>Do Not Scroll</h2>
-        <h2>Cautious!</h2>
-        <h2>Do Not Scroll</h2>
-        <h2>Cautious!</h2>
-        <h2>Do Not Scroll</h2>
-        <h2>Cautious!</h2>
-        <h2>Do Not Scroll</h2>
-        <h2>Cautious!</h2>
-        <h2>Do Not Scroll</h2>
-        <h2>Cautious!</h2>
-        <h2>Do Not Scroll</h2>
-    </div>
+
+<div class="slider" aria-hidden="true" style={`--tilt: ${tilt}deg`}>
+  <div class:list={["track", { reverse }]} data-marquee>
+    {
+      [0, 1].map(() => (
+        <div class="group">
+          {group.map((text) => (
+            <span>{text}</span>
+          ))}
+        </div>
+      ))
+    }
+  </div>
 </div>
 
 <style lang="scss">
-	:root{
-		--gap: 2rem
-	}
-	.slider {
-	background-color: rgb(207, 196, 41);
-	border: 2px solid black;
-	padding: 10px 0;
-	overflow: hidden;
-	user-select: none;
-	transform: rotate(-0.5deg);
-	mask-image: linear-gradient(
-		to right,
-		transparent,
-		#000 10% 90%,
-		transparent
-	);
+  .slider {
+    --gap: 3.5rem;
 
-	.text-wrapper {
-		display: flex;
-		gap: var(--gap);
-		align-items: center;
-		animation: slide 15s linear infinite;
-		animation-delay: 3s;
-		width: max-content;
-	}
+    background-color: var(--clr-tape);
+    border-block: 2px solid #000;
+    padding: 10px 0;
+    // slightly wider than the page so the tilt never shows a corner
+    width: 102%;
+    margin-inline-start: -1%;
+    overflow: hidden;
+    user-select: none;
+    transform: rotate(var(--tilt));
+  }
 
-	h2 {
-		font-size: 2rem;
-		font-weight: bold;
-		white-space: nowrap;
-		color: black;
-		margin: 0px 20px;
-	}
+  .track {
+    display: flex;
+    width: max-content;
+    animation: slide 40s linear infinite;
 
-	@keyframes slide {
-		to {
-		transform: translateX(calc(-50% - var(--gap))); // Move half the distance, allowing for continuous flow
-		}
-	}
-	}
+    &.reverse {
+      animation-direction: reverse;
+    }
+  }
 
+  .group {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    padding-inline-end: var(--gap);
+    flex-shrink: 0;
+  }
+
+  span {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    font-weight: bold;
+    white-space: nowrap;
+    color: #000;
+  }
+
+  @keyframes slide {
+    to {
+      transform: translateX(-50%);
+    }
+  }
 </style>

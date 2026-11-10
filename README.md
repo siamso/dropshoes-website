@@ -1,47 +1,46 @@
-# Astro Starter Kit: Minimal
+# Dropshoes
 
-```sh
-npm create astro@latest -- --template minimal
-```
+A small-batch shoe store built with [Astro](https://astro.build) and SCSS.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+## Pages
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+| Route          | What it is                                              |
+| :------------- | :------------------------------------------------------ |
+| `/`            | Home: season headline, categories, fresh drops, story   |
+| `/shop`        | All products, with category filter and price sort       |
+| `/shop/[slug]` | Product page with size picker and add to cart           |
+| `/collection`  | The lookbook                                            |
+| `/about`       | Brand story, shipping, returns and sizing               |
+| `/checkout`    | Demo checkout (no payment provider connected)           |
+| `/404`         | Not found                                               |
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+## Where things live
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+src/
+├── assets/images/   photos and product shots (optimised at build time)
+├── components/      Nav, Footer, CartDrawer, ProductCard, CardSlider, TextSlider, BigTitle
+├── data/            products.ts (the catalogue) and site.ts (nav, season headline)
+├── layouts/         MainLayout and the <head>
+├── pages/           one file per route
+├── scripts/         cart.ts (localStorage cart) and app.ts (reveals, Ink Mode, tape)
+├── styles/          the SCSS system: abstracts, base, components, layout, utilities
+└── utilities/       CustomCursor
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+To add or change a product, edit `src/data/products.ts`. To change the season
+headline or the nav links, edit `src/data/site.ts`.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Commands
 
-Any static assets, like images, can be placed in the `public/` directory.
+| Command           | Action                                      |
+| :---------------- | :------------------------------------------ |
+| `npm install`     | Install dependencies                        |
+| `npm run dev`     | Start the dev server at `localhost:4321`    |
+| `npm run build`   | Build the production site to `./dist/`      |
+| `npm run preview` | Preview the build locally                   |
 
-## 🧞 Commands
+## Not wired up yet
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- The cart is stored in the browser (`localStorage`); checkout is a demo and takes no payment.
+- The newsletter form confirms on screen but does not send the address anywhere.

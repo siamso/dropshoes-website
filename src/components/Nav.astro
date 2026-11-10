@@ -1,70 +1,281 @@
 ---
+import { site } from "../data/site";
 
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
-<header>
-        <nav>
-            <div class="sidebar">
-                <h1 class="fs-700">Dropshoes</h1>
-                <ul>
-                    <li><a href="/">Shop</a></li>
-                    <li><a href="/">Collection</a></li>
-                    <li><a href="/">About</a></li>
-                </ul>
-            </div>
-            <button class="inkMode__desktop fs-500 fw-bold">Ink Mode</button>
-            <button class="cart">Cart</button>
-        </nav>
-    </div>
+
+<header class="site-nav" data-nav>
+  <a class="logo fs-700" href="/" aria-label="Dropshoes, home">Dropshoes</a>
+
+  <nav class="links" id="site-menu" aria-label="Main">
+    <ul role="list">
+      {
+        site.nav.map((link, index) => (
+          <li style={`--i: ${index}`}>
+            <a class="link-line" href={link.href} aria-current={isActive(link.href) ? "page" : undefined}>
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <button class="ink-mode fs-500 fw-bold" type="button" data-theme-toggle aria-pressed="false">Ink Mode</button>
+
+  <button class="cart" type="button" data-cart-open aria-haspopup="dialog">
+    Cart <span data-cart-count>(0)</span>
+  </button>
+
+  <button class="menu" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-menu">
+    <span class="visually-hidden">Menu</span>
+    <span class="bars" aria-hidden="true"></span>
+  </button>
 </header>
+
 <style lang="scss">
-    @use '../styles/abstracts' as *;
-    nav{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-    }
-    .sidebar{
-        position: fixed;
-        display: flex;
-        flex-direction: column;
-        padding: 10px;
-        width: 100px;
-        min-height: 100vh;
-        align-items: center;
-        justify-content: space-between;
+  @use "../styles/abstracts" as *;
 
-        h1{
-            transform: rotate(-90deg);
-            margin-block-start: 4.5rem;
-            font-family: $font-family-accent;
-        }
-    }
-    .inkMode__desktop{
-        font-family: $font-family-accent;
-        position: absolute;
-        top: 2rem;
-        left: 50%;
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
+  // Small screens: a fixed top bar with a full-screen menu.
+  .site-nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    height: var(--topbar-h);
+    padding-inline: var(--gutter);
+    background-color: var(--clr-bg);
+    border-block-end: 2px solid var(--clr-ink);
+  }
 
-        &::before{
-            position: absolute;
-            top: 0;
-            left: 10px;
-            content: '';
-            background-color: rgba(255, 166, 0, 0.493);
-            width: 60px;
-            border-top-left-radius: 30px;
-            border-top-right-radius: 5px;
-            height: 25px;
-        }
+  .logo {
+    font-family: $font-family-accent;
+    text-decoration: none;
+    line-height: 1;
+    margin-inline-end: auto;
+  }
+
+  button {
+    background-color: transparent;
+    border: none;
+  }
+
+  .cart {
+    white-space: nowrap;
+  }
+
+  .ink-mode {
+    position: relative;
+    isolation: isolate;
+    font-family: $font-family-accent;
+    white-space: nowrap;
+
+    &::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      left: 10px;
+      width: 60px;
+      height: 25px;
+      background-color: var(--clr-highlight);
+      border-top-left-radius: 30px;
+      border-top-right-radius: 5px;
+      transition: width 350ms $ease-out, left 350ms $ease-out, transform 350ms $ease-out;
     }
-    .cart{
-        position: fixed;
-        top: 2rem;
-        right: 2rem;
-        background-color: transparent;
-        border: none;
+
+    &:is(:hover, :focus-visible)::before {
+      left: -4px;
+      width: calc(100% + 8px);
+      transform: rotate(-2deg);
     }
+
+    &[aria-pressed="true"]::before {
+      left: -4px;
+      width: calc(100% + 8px);
+    }
+  }
+
+  .menu {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-inline-end: -0.5rem;
+
+    .bars,
+    .bars::before {
+      display: block;
+      width: 1.5rem;
+      height: 2px;
+      background-color: currentColor;
+      transition: transform 300ms $ease-out;
+    }
+
+    .bars {
+      transform: translateY(-4px);
+
+      &::before {
+        content: "";
+        transform: translateY(8px);
+      }
+    }
+
+    &[aria-expanded="true"] .bars {
+      transform: rotate(45deg);
+
+      &::before {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+
+  .links {
+    position: fixed;
+    inset: var(--topbar-h) 0 0 0;
+    display: grid;
+    align-content: center;
+    padding: var(--gutter);
+    background-color: var(--clr-bg);
+    clip-path: inset(0 0 100% 0);
+    visibility: hidden;
+    transition: clip-path 500ms $ease-in-out, visibility 0s 500ms;
+
+    ul {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    li {
+      overflow: hidden;
+    }
+
+    a {
+      display: inline-block;
+      font-size: clamp(2.5rem, 13vw, 5rem);
+      font-weight: bold;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      text-transform: uppercase;
+      transform: translateY(110%);
+      transition: transform 600ms $ease-out, background-size 350ms $ease-out;
+    }
+  }
+
+  .site-nav.is-open .links {
+    clip-path: inset(0);
+    visibility: visible;
+    transition: clip-path 500ms $ease-in-out;
+
+    a {
+      transform: none;
+      transition-delay: calc(var(--i) * 70ms + 150ms), 0s;
+    }
+  }
+
+  // Larger screens: the original layout — logo and links pinned to the left
+  // edge, Ink Mode at the top centre, Cart in the top right corner.
+  @include mq(medium) {
+    .site-nav {
+      position: static;
+      display: block;
+      height: 0;
+      padding: 0;
+      border: 0;
+      background: none;
+    }
+
+    // White + difference blending keeps the fixed items readable over
+    // anything that scrolls underneath them.
+    .logo,
+    .links {
+      position: fixed;
+      z-index: 100;
+      color: #fff;
+      mix-blend-mode: difference;
+    }
+
+    .logo {
+      top: 1.5rem;
+      left: calc(var(--sidebar-w) / 2);
+      margin: 0;
+      writing-mode: vertical-rl;
+      transform: translateX(-50%) rotate(180deg);
+      animation: fade-in 800ms ease 200ms both;
+    }
+
+    .links {
+      inset: auto auto 1.5rem 1.5rem;
+      display: block;
+      padding: 0;
+      background: none;
+      clip-path: none;
+      visibility: visible;
+      animation: fade-in 800ms ease 350ms both;
+
+      ul {
+        gap: 0.15rem;
+      }
+
+      a {
+        color: inherit;
+        font-size: 1rem;
+        font-weight: 400;
+        letter-spacing: 0;
+        line-height: 1.5;
+        text-transform: none;
+        transform: none;
+      }
+    }
+
+    .ink-mode {
+      position: absolute;
+      top: 2rem;
+      left: 50%;
+      z-index: 100;
+      animation: fade-in 800ms ease 500ms both;
+    }
+
+    // The cart floats over photos, so it carries its own background.
+    .cart {
+      position: fixed;
+      z-index: 100;
+      top: 1.6rem;
+      right: 2rem;
+      padding: 0.3rem 0.9rem;
+      background-color: var(--clr-bg);
+      border: 2px solid var(--clr-ink);
+      border-radius: 99px;
+      transition: background-color 250ms ease, color 250ms ease;
+
+      &:is(:hover, :focus-visible) {
+        background-color: var(--clr-ink);
+        color: var(--clr-bg);
+      }
+
+      animation: fade-in 800ms ease 650ms both;
+    }
+
+    .menu {
+      display: none;
+    }
+  }
 </style>
+
+<script>
+  const nav = document.querySelector<HTMLElement>("[data-nav]")!;
+  const toggle = nav.querySelector<HTMLButtonElement>("[data-menu-toggle]")!;
+
+  const setOpen = (open: boolean) => {
+    nav.classList.toggle("is-open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+    document.body.style.overflow = open ? "hidden" : "";
+  };
+
+  toggle.addEventListener("click", () => setOpen(!nav.classList.contains("is-open")));
+  window.addEventListener("keydown", (event) => event.key === "Escape" && setOpen(false));
+  matchMedia("(min-width: 48em)").addEventListener("change", () => setOpen(false));
+</script>

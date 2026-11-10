@@ -1,0 +1,348 @@
+---
+import { Image } from "astro:assets";
+import CardSlider from "../../components/CardSlider.astro";
+import Icon from "../../components/Icon.astro";
+import MainLayout from "../../layouts/MainLayout.astro";
+import { formatPrice, products, type Product } from "../../data/products";
+
+export function getStaticPaths() {
+  return products.map((product) => ({ params: { slug: product.slug }, props: { product } }));
+}
+
+interface Props {
+  product: Product;
+}
+const { product } = Astro.props;
+const index = products.indexOf(product);
+const count = String(index + 1).padStart(2, "0");
+const others = [
+  ...products.filter((p) => p !== product && p.category === product.category),
+  ...products.filter((p) => p.category !== product.category),
+];
+---
+
+<MainLayout title={`${product.name} - DropShoes`} description={product.description}>
+  <section class="section product">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a class="link-line" href="/shop">Shop</a>
+        <span aria-hidden="true">/</span>
+        <a class="link-line" href={`/shop?category=${product.category}`}>{product.category}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{product.name}</span>
+      </nav>
+
+      <div class="product__grid">
+        <div class="stage" style={`background-color: ${product.tile}`}>
+          <span class="stage__count">({count})</span>
+          {product.tag && <span class="stage__tag">{product.tag}</span>}
+          <Image
+            src={product.image}
+            alt={`${product.name} shoe, side view`}
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 65em) 38rem, 95vw"
+            loading="eager"
+          />
+        </div>
+
+        <div class="info">
+          <p class="eyebrow rise" style="--i: 0">{product.category} · {product.type}</p>
+          <h1 class="rise" style="--i: 1">{product.name}</h1>
+          <p class="price rise" style="--i: 2">{formatPrice(product.price)}</p>
+          <p class="blurb rise" style="--i: 3">{product.description}</p>
+
+          <form class="buy rise" style="--i: 4" data-buy data-id={product.slug}>
+            <fieldset>
+              <legend>Size (EU)</legend>
+              <div class="sizes">
+                {
+                  product.sizes.map((size) => (
+                    <label>
+                      <input class="visually-hidden" type="radio" name="size" value={size} required />
+                      <span>{size}</span>
+                    </label>
+                  ))
+                }
+              </div>
+            </fieldset>
+            <p class="buy__hint" role="status" data-buy-status></p>
+            <button class="button" data-type="primary" data-size="full" type="submit">
+              <span data-buy-label>Add to cart</span>
+              <Icon name="plus" />
+            </button>
+          </form>
+
+          <div class="details rise" style="--i: 5">
+            <details open>
+              <summary>Details <Icon name="plus" /></summary>
+              <ul>
+                {product.details.map((detail) => <li>{detail}</li>)}
+              </ul>
+            </details>
+            <details>
+              <summary>Shipping & returns <Icon name="plus" /></summary>
+              <p>
+                Free tracked shipping on orders over $150. Unworn pairs can be returned within 30 days
+                for a full refund.
+              </p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2 class="section-head__title">Also<br />dropping</h2>
+        <a class="arrow-link" data-size="small" href="/shop">
+          View all
+          <span class="arrow-link__icon"><Icon name="arrow-right" /></span>
+        </a>
+      </div>
+      <div data-reveal>
+        <CardSlider products={others} />
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style lang="scss">
+  @use "../../styles/abstracts" as *;
+
+  .product {
+    padding-block-start: clamp(1.5rem, 6vw, 5.5rem);
+  }
+
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-block-end: 1.5rem;
+    font-size: 0.875rem;
+    text-transform: capitalize;
+
+    [aria-current] {
+      color: var(--clr-muted);
+    }
+  }
+
+  .product__grid {
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
+
+    @include mq(large) {
+      grid-template-columns: 1.15fr 1fr;
+    }
+  }
+
+  .stage {
+    position: relative;
+    aspect-ratio: 1;
+    border: 2px solid var(--clr-ink);
+    overflow: hidden;
+    color: #000;
+    animation: stage-in 900ms $ease-in-out both;
+
+    @include mq(large) {
+      position: sticky;
+      top: 2rem;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      animation: shoe-in 1.1s $ease-out 250ms both, float 6s ease-in-out 1.4s infinite;
+    }
+
+    &__count {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      font-weight: bold;
+    }
+
+    &__tag {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.2rem 0.6rem;
+      background-color: var(--clr-tape);
+      border: 2px solid #000;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transform: rotate(4deg);
+    }
+  }
+
+  @keyframes stage-in {
+    from {
+      clip-path: inset(100% 0 0 0);
+    }
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes shoe-in {
+    from {
+      opacity: 0;
+      transform: translateX(-18%) rotate(-12deg);
+    }
+  }
+
+  .rise {
+    animation: info-in 800ms $ease-out both;
+    animation-delay: calc(var(--i) * 90ms + 250ms);
+  }
+
+  @keyframes info-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+  }
+
+  .info {
+    h1 {
+      font-size: clamp(2.75rem, 7vw, 5rem);
+      font-weight: bold;
+      letter-spacing: -0.035em;
+      line-height: 0.95;
+      text-transform: uppercase;
+      margin-block: 0.5rem 1rem;
+    }
+
+    .price {
+      font-size: 1.75rem;
+      font-weight: bold;
+    }
+
+    .blurb {
+      max-width: 46ch;
+      margin-block: 1rem 2rem;
+    }
+  }
+
+  .buy {
+    fieldset {
+      border: 0;
+    }
+
+    legend {
+      font-size: 0.8125rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-block-end: 0.6rem;
+    }
+
+    &__hint {
+      min-height: 1.5em;
+      margin-block: 0.5rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  .sizes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    span {
+      display: grid;
+      place-items: center;
+      width: 3.25rem;
+      height: 3.25rem;
+      border: 2px solid var(--clr-ink);
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 200ms ease, color 200ms ease, transform 250ms $ease-out;
+    }
+
+    label:hover span {
+      transform: translateY(-3px);
+    }
+
+    input:checked + span {
+      background-color: var(--clr-ink);
+      color: var(--clr-bg);
+    }
+
+    input:focus-visible + span {
+      outline: 2px solid var(--clr-ink);
+      outline-offset: 3px;
+    }
+  }
+
+  .details {
+    margin-block-start: 2.5rem;
+    border-block-start: 2px solid var(--clr-ink);
+
+    details {
+      border-block-end: 2px solid var(--clr-ink);
+    }
+
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: 1rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      :global(svg) {
+        transition: transform 300ms $ease-out;
+      }
+    }
+
+    details[open] summary :global(svg) {
+      transform: rotate(45deg);
+    }
+
+    ul,
+    p {
+      padding-block-end: 1.25rem;
+      max-width: 46ch;
+    }
+
+    ul {
+      padding-inline-start: 1.1rem;
+    }
+  }
+</style>
+
+<script>
+  import { addToCart } from "../../scripts/cart";
+
+  const form = document.querySelector<HTMLFormElement>("[data-buy]")!;
+  const status = form.querySelector<HTMLElement>("[data-buy-status]")!;
+  const label = form.querySelector<HTMLElement>("[data-buy-label]")!;
+
+  form.noValidate = true;
+  form.addEventListener("change", () => (status.textContent = ""));
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const size = new FormData(form).get("size");
+    if (!size) {
+      status.textContent = "Pick a size first.";
+      return;
+    }
+    addToCart(form.dataset.id!, Number(size));
+    label.textContent = "Added";
+    setTimeout(() => (label.textContent = "Add to cart"), 1600);
+    window.dispatchEvent(new Event("cart:open"));
+  });
+</script>

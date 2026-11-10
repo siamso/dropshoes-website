@@ -1,0 +1,42 @@
+---
+import BigTitle from "../components/BigTitle.astro";
+import Icon from "../components/Icon.astro";
+import TextSlider from "../components/TextSlider.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout title="Page not found - DropShoes">
+  <section class="section hero">
+    <div class="container">
+      <BigTitle lines={["Lost,", "404"]} note={["WRONG", "TURN"]} />
+    </div>
+  </section>
+
+  <section class="section">
+    <TextSlider items={["Cautious!", "Nothing to see here"]} />
+  </section>
+
+  <section>
+    <div class="container lost">
+      <p class="lede">This page walked off. The shoes are still where you left them.</p>
+      <a class="arrow-link" href="/shop">
+        Explore
+        <span class="arrow-link__icon"><Icon name="arrow-right" /></span>
+      </a>
+    </div>
+  </section>
+</MainLayout>
+
+<style lang="scss">
+  .hero {
+    padding-block-start: clamp(2.5rem, 9vw, 6rem);
+  }
+
+  .lost {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+</style>

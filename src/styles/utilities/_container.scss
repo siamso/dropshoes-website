@@ -1,11 +1,11 @@
 @use "../abstracts/" as *;
 
+// Content hugs the right edge and keeps clear of the fixed sidebar on the left.
 .container {
-  --padding: #{$container-min-margin-inline} * 2;
   --max-width: #{$container-max-width};
 
-  width: min(100% - var(--padding), var(--max-width));
-  margin-inline-start: 30rem;
+  width: min(100% - var(--sidebar-w) - var(--gutter) * 2, var(--max-width));
+  margin-inline: auto var(--gutter);
 }
 
 .container[data-type="narrow"] {

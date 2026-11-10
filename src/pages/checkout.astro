@@ -1,0 +1,269 @@
+---
+import BigTitle from "../components/BigTitle.astro";
+import Icon from "../components/Icon.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+
+const fields = [
+  { name: "email", label: "Email", type: "email", autocomplete: "email", wide: true },
+  { name: "name", label: "Full name", type: "text", autocomplete: "name", wide: true },
+  { name: "address", label: "Address", type: "text", autocomplete: "street-address", wide: true },
+  { name: "city", label: "City", type: "text", autocomplete: "address-level2" },
+  { name: "postcode", label: "Postcode", type: "text", autocomplete: "postal-code" },
+];
+---
+
+<MainLayout title="Checkout - DropShoes">
+  <section class="section hero">
+    <div class="container">
+      <BigTitle lines={["Check", "OUT"]} />
+    </div>
+  </section>
+
+  <section>
+    <div class="container" data-checkout>
+      <div class="state" data-state="empty" hidden>
+        <p class="lede">Your cart is empty — nothing to check out yet.</p>
+        <a class="button" href="/shop">Go find a pair</a>
+      </div>
+
+      <div class="checkout" data-state="form" hidden>
+        <form data-checkout-form>
+          <p class="notice">
+            <strong>Demo checkout.</strong> No payment is taken and no order is sent — this store isn't
+            connected to a payment provider yet.
+          </p>
+          <h2 class="eyebrow">Where should we send them?</h2>
+          <div class="fields">
+            {
+              fields.map((field) => (
+                <div class:list={["field", { wide: field.wide }]}>
+                  <label for={`checkout-${field.name}`}>{field.label}</label>
+                  <input
+                    id={`checkout-${field.name}`}
+                    name={field.name}
+                    type={field.type}
+                    autocomplete={field.autocomplete}
+                    required
+                  />
+                </div>
+              ))
+            }
+          </div>
+          <button class="button" data-type="primary" type="submit">
+            Place order <Icon name="arrow-right" />
+          </button>
+        </form>
+
+        <aside class="summary" aria-labelledby="summary-title">
+          <h2 id="summary-title" class="eyebrow">Your order</h2>
+          <ul role="list" data-summary-lines></ul>
+          <dl>
+            <div><dt>Subtotal</dt><dd data-summary-subtotal></dd></div>
+            <div><dt>Shipping</dt><dd data-summary-shipping></dd></div>
+            <div class="total"><dt>Total</dt><dd data-summary-total></dd></div>
+          </dl>
+        </aside>
+      </div>
+
+      <div class="state done" data-state="done" hidden tabindex="-1">
+        <span class="done__check"><Icon name="check" /></span>
+        <h2>Thanks, <span data-done-name></span>.</h2>
+        <p class="lede">
+          That's the end of the demo checkout. No payment was taken and nothing will ship — your cart has
+          been cleared.
+        </p>
+        <a class="button" href="/shop">Back to the shop</a>
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style lang="scss">
+  @use "../styles/abstracts" as *;
+
+  .hero {
+    padding-block-start: clamp(2.5rem, 9vw, 6rem);
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  .state {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+    animation: info-in 700ms $ease-out both;
+  }
+
+  .checkout {
+    display: grid;
+    gap: 3rem clamp(2rem, 6vw, 5rem);
+    align-items: start;
+    animation: info-in 700ms $ease-out both;
+
+    @include mq(large) {
+      grid-template-columns: 1.3fr 1fr;
+    }
+  }
+
+  @keyframes info-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+  }
+
+  .notice {
+    padding: 1rem 1.25rem;
+    margin-block-end: 2.5rem;
+    background-color: var(--clr-tape);
+    border: 2px solid #000;
+    color: #000;
+    transform: rotate(-0.5deg);
+
+    strong {
+      font-weight: bold;
+    }
+  }
+
+  .fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-block: 1.5rem 2.5rem;
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .summary {
+    padding: 1.5rem;
+    border: 2px solid var(--clr-ink);
+
+    ul {
+      margin-block: 1rem;
+    }
+
+    :global(.summary-line) {
+      display: grid;
+      grid-template-columns: 4rem 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      padding-block: 0.75rem;
+    }
+
+    :global(.summary-line img) {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: contain;
+      border: 2px solid var(--clr-ink);
+    }
+
+    :global(.summary-line small) {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--clr-muted);
+      text-transform: capitalize;
+    }
+
+    :global(.summary-line strong) {
+      font-weight: bold;
+    }
+
+    dl {
+      display: grid;
+      gap: 0.4rem;
+      padding-block-start: 1rem;
+      border-block-start: 2px solid var(--clr-ink);
+
+      div {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .total {
+        margin-block-start: 0.5rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .done {
+    &:focus {
+      outline: none;
+    }
+
+    h2 {
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: bold;
+      letter-spacing: -0.035em;
+      line-height: 1;
+    }
+
+    &__check {
+      display: grid;
+      place-items: center;
+      width: 4.5rem;
+      height: 4.5rem;
+      border: 2px solid #000;
+      border-radius: 50%;
+      background-color: var(--clr-tape);
+      color: #000;
+      font-size: 2.25rem;
+      animation: pop-in 600ms $ease-out 200ms both;
+    }
+  }
+</style>
+
+<script>
+  import { cartTotal, clearCart, getCart, getCatalog, money } from "../scripts/cart";
+
+  const root = document.querySelector<HTMLElement>("[data-checkout]")!;
+  const form = root.querySelector<HTMLFormElement>("[data-checkout-form]")!;
+  const catalog = getCatalog();
+  let done = false;
+
+  const show = (state: string) =>
+    root.querySelectorAll<HTMLElement>("[data-state]").forEach((el) => (el.hidden = el.dataset.state !== state));
+
+  function render() {
+    if (done) return;
+    const lines = getCart();
+    if (!lines.length) return show("empty");
+
+    const subtotal = cartTotal(lines);
+    const shipping = subtotal >= 150 ? 0 : 9;
+    root.querySelector("[data-summary-lines]")!.innerHTML = lines
+      .map((line) => {
+        const item = catalog[line.id];
+        return `<li class="summary-line">
+          <img src="${item.image}" alt="" width="80" height="80" style="background-color:${item.tile}" />
+          <span><strong>${item.name}</strong><small>${item.category} · EU ${line.size} · Qty ${line.qty}</small></span>
+          <span>${money(item.price * line.qty)}</span>
+        </li>`;
+      })
+      .join("");
+    root.querySelector("[data-summary-subtotal]")!.textContent = money(subtotal);
+    root.querySelector("[data-summary-shipping]")!.textContent = shipping ? money(shipping) : "Free";
+    root.querySelector("[data-summary-total]")!.textContent = money(subtotal + shipping);
+    show("form");
+  }
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const name = String(new FormData(form).get("name") || "").trim().split(" ")[0];
+    root.querySelector("[data-done-name]")!.textContent = name || "friend";
+    done = true;
+    clearCart();
+    show("done");
+    const panel = root.querySelector<HTMLElement>("[data-state='done']")!;
+    panel.focus({ preventScroll: true });
+    panel.scrollIntoView({ block: "center" });
+  });
+
+  window.addEventListener("cart:change", render);
+  render();
+</script>

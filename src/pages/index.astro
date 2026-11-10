@@ -1,123 +1,346 @@
 ---
+import { Image } from "astro:assets";
+import BigTitle from "../components/BigTitle.astro";
+import CardSlider from "../components/CardSlider.astro";
+import Icon from "../components/Icon.astro";
 import TextSlider from "../components/TextSlider.astro";
 import MainLayout from "../layouts/MainLayout.astro";
+import { products } from "../data/products";
+import { site } from "../data/site";
+import lookWomen from "../assets/images/look-women.jpg";
+import lookMen from "../assets/images/look-men.jpg";
+import lookLeather from "../assets/images/look-leather.jpg";
+import lookStreet from "../assets/images/look-street.jpg";
 
+const categories = [
+  { count: "01", label: "Women", href: "/shop?category=women", image: lookWomen, alt: "Woman in a black tracksuit and peach sneakers sitting on a sofa against a red wall" },
+  { count: "02", label: "Men", href: "/shop?category=men", image: lookMen, alt: "Man in light jeans and bright red sneakers sitting on a concrete wall" },
+];
+
+const perks = [
+  { title: "Small batches", text: "Every style is a limited run. When a drop is gone, it's gone." },
+  { title: "Free shipping", text: "On every order over $150, tracked from our door to yours." },
+  { title: "30-day returns", text: "Wrong size or second thoughts? Send them back, no questions." },
+];
 ---
 
 <MainLayout title="DropShoes - Shop for Shoes">
-    <section class="section">
-        <div class="container">
-            <div class="title">
-                <h1>Spring,</h1>
-                <div class="text-wrapper">
-                    <h1>SUMMER</h1>
-                    <h2>COLL.<br>2024</h2>
-                </div>
-            </div>
+  <section class="section hero">
+    <div class="container">
+      <BigTitle lines={site.season.lines} note={site.season.note} fit={5.3} />
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="layout">
+        {
+          categories.map((category, index) => (
+            <a class="portrait__card" href={category.href}>
+              <div class="image-container" data-reveal="clip" style={`--d: ${index * 150}ms`}>
+                <Image
+                  src={category.image}
+                  alt={category.alt}
+                  widths={[480, 800, 1200]}
+                  sizes="(min-width: 65em) 30rem, 45vw"
+                  loading="eager"
+                />
+              </div>
+              <div class="text-wrapper">
+                <span class="count">({category.count})</span>
+                <span class="gender">{category.label}</span>
+                <span class="go"><Icon name="arrow-up-right" /></span>
+              </div>
+            </a>
+          ))
+        }
+        <a class="arrow-link explore" href="/shop" data-reveal>
+          Explore
+          <span class="arrow-link__icon"><Icon name="arrow-right" /></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <TextSlider />
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2 class="section-head__title">Fresh<br />drops</h2>
+        <p class="eyebrow">(03) Just landed — drag to browse</p>
+      </div>
+      <div data-reveal>
+        <CardSlider {products} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="story">
+        <div class="story__image" data-reveal="clip">
+          <Image
+            src={lookLeather}
+            alt="Polished brown leather shoes resting on a patterned rug"
+            widths={[640, 1000, 1400]}
+            sizes="(min-width: 65em) 36rem, 90vw"
+          />
         </div>
-    </section>
-    <section>
-        <div class="container">
-            <div class="layout">
-                <div class="portrait__card">
-                    <div class="image-container">
-                        <img src="/images/heroPic2.jpg" alt="figure">
-                    </div>
-                    <div class="text-wrapper">
-                        <span>(01)</span>
-                        <span>Women</span>
-                    </div>
-                </div>
-                <div class="portrait__card">
-                    <div class="image-container">
-                        <img src="/images/heroPic4.jpg" alt="figure">
-                    </div>
-                    <div class="text-wrapper">
-                        <span class="count">(02)</span>
-                        <span class="gender">Men</span>
-                    </div>
-                </div>
-                <button>
-                    Explore
-                    <i class='border bx bx-right-arrow-alt'></i>
-                </button>
-            </div>
+        <div class="story__text" data-reveal>
+          <p class="eyebrow">(04) The idea</p>
+          <h2>Fewer pairs.<br />Better <span class="marker">pairs.</span></h2>
+          <p>
+            Dropshoes makes shoes in small batches and sells them until they run out. No endless
+            catalogue, no fifty colourways — just the pairs we'd actually wear, released a few at a time.
+          </p>
+          <a class="arrow-link" data-size="small" href="/about">
+            Our story
+            <span class="arrow-link__icon"><Icon name="arrow-right" /></span>
+          </a>
         </div>
-    </section>
-    <section class="section">
-        <TextSlider/>
-    </section>
-    <section class="section">
-        <div class="container">
-            <h1></h1>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <ul class="perks" role="list">
+        {
+          perks.map((perk, index) => (
+            <li data-reveal style={`--d: ${index * 120}ms`}>
+              <span class="count">({String(index + 1).padStart(2, "0")})</span>
+              <h3>{perk.title}</h3>
+              <p>{perk.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <TextSlider items={["Told you.", "Now you want shoes"]} reverse tilt={0.5} />
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <a class="lookbook" href="/collection">
+        <div class="lookbook__image" data-reveal="clip">
+          <Image
+            src={lookStreet}
+            alt="Person in black heeled boots standing in front of a colourful graffiti wall"
+            widths={[800, 1400, 2000]}
+            sizes="(min-width: 65em) 75rem, 95vw"
+          />
         </div>
-    </section>
+        <div class="lookbook__text">
+          <p class="eyebrow">(05) Lookbook</p>
+          <h2>See the<br />collection</h2>
+          <span class="arrow-link__icon"><Icon name="arrow-up-right" /></span>
+        </div>
+      </a>
+    </div>
+  </section>
 </MainLayout>
 
 <style lang="scss">
-    .title{
-        text-align: end;
-        font-size: 14rem;
-        letter-spacing: -5px;
-        word-spacing: 0px;
-        line-height: 230px;
+  @use "../styles/abstracts" as *;
+
+  .hero {
+    padding-block-start: clamp(2.5rem, 9vw, 6rem);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1rem, 3vw, 2rem);
+    width: min(100%, 62.5rem);
+    margin-inline-start: auto;
+  }
+
+  .portrait__card {
+    display: block;
+    text-decoration: none;
+
+    .image-container {
+      aspect-ratio: 2 / 3;
+      border: 2px solid var(--clr-ink);
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    // a slow zoom on hover, layered on top of the reveal
+    &:is(:hover, :focus-visible) .image-container.is-inview img {
+      transform: scale(1.06);
+    }
+
+    .text-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.35em;
+      margin-block-start: 0.35rem;
+      overflow: hidden;
+    }
+
+    .go {
+      display: inline-grid;
+      opacity: 0;
+      transform: translate(-0.5em, 0.5em);
+      transition: opacity 300ms ease, transform 300ms $ease-out;
+    }
+
+    &:is(:hover, :focus-visible) .go {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .explore {
+    grid-column: span 2;
+    justify-self: end;
+    margin-block-start: 1rem;
+  }
+
+  .story {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+
+    @include mq(large) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    &__image {
+      aspect-ratio: 4 / 3;
+      border: 2px solid var(--clr-ink);
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &__text {
+      display: grid;
+      gap: 1.5rem;
+      justify-items: start;
+
+      h2 {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
         font-weight: bold;
-        user-select: none;
+        letter-spacing: -0.035em;
+        line-height: 1;
+      }
 
-        .text-wrapper{
-            display: flex;
-            align-items: center;
-            justify-content: end;
-
-            h2{
-                font-size: 4rem;
-                letter-spacing: -2px;
-                line-height: 50px;
-                margin-inline-start: 2rem;
-            }
-        }
+      p:not(.eyebrow) {
+        max-width: 46ch;
+      }
     }
-    .layout{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
+  }
+
+  .perks {
+    display: grid;
+    border-block-start: 2px solid var(--clr-ink);
+
+    @include mq(medium) {
+      grid-template-columns: repeat(3, 1fr);
     }
 
-    .portrait__card{
-        overflow: hidden;
+    li {
+      padding: 1.5rem 0;
+      border-block-end: 2px solid var(--clr-ink);
 
-        .image-container{
-            border: 2px solid black;
+      @include mq(medium) {
+        padding: 2rem 1.5rem 2.5rem;
 
-            img{
-                object-fit: cover;
-            }
+        &:first-child {
+          padding-inline-start: 0;
         }
 
-        .text-wrapper{
-            .count{
-                display: inline-block;
-                align-items: start;
-            }
-            .gender{
-                display: inline-block;
-                align-items: center;
-            }
+        & + li {
+          border-inline-start: 2px solid var(--clr-ink);
         }
-    }
-    button{
-        grid-column: span 2;
-        justify-self: end;
-        background-color: transparent;
-        border: none;
-        font-size: 3rem;
-
-        .border{
-            border: 2px solid black;
-            border-radius: 50%;
-            padding: .4rem;
-        }
+      }
     }
 
+    h3 {
+      font-size: 1.75rem;
+      font-weight: bold;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-block: 2rem 0.5rem;
+    }
+  }
+
+  .lookbook {
+    position: relative;
+    display: block;
+    color: #fff;
+    text-decoration: none;
+
+    &__image {
+      aspect-ratio: 16 / 9;
+      border: 2px solid var(--clr-ink);
+      overflow: hidden;
+
+      @media (max-width: 40em) {
+        aspect-ratio: 4 / 5;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    &:is(:hover, :focus-visible) &__image.is-inview img {
+      transform: scale(1.04);
+    }
+
+    &__text {
+      position: absolute;
+      inset: auto 0 0 0;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 0.5rem 1rem;
+      padding: clamp(1rem, 3vw, 2.5rem);
+      background: linear-gradient(to top, rgb(0 0 0 / 0.75), transparent);
+
+      .eyebrow {
+        grid-column: 1 / -1;
+      }
+
+      h2 {
+        font-size: clamp(2.5rem, 8vw, 7rem);
+        font-weight: bold;
+        letter-spacing: -0.035em;
+        line-height: 0.92;
+        text-transform: uppercase;
+      }
+
+      .arrow-link__icon {
+        width: clamp(3rem, 7vw, 5rem);
+        height: clamp(3rem, 7vw, 5rem);
+        border-color: #fff;
+        font-size: clamp(1.25rem, 3vw, 2rem);
+      }
+    }
+
+    &:is(:hover, :focus-visible) .arrow-link__icon {
+      background-color: #fff;
+      color: #000;
+    }
+  }
 </style>
-

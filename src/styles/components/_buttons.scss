@@ -1,8 +1,14 @@
 @use "../abstracts" as *;
 
+// Outlined by default; the fill sweeps up from the bottom on hover.
 .button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   justify-content: center;
+  align-items: center;
+  gap: 0.75em;
   cursor: pointer;
   text-decoration: none;
   line-height: 1;
@@ -10,29 +16,118 @@
   font-size: $button-font-size;
   text-transform: $button-text-transform;
   font-weight: $button-font-weight;
+  letter-spacing: 0.12em;
   padding: $button-padding;
-  border: $button-border;
-  transition: 275ms ease;
+  border: 2px solid $color-ink;
+  border-radius: $button-border-radius;
+  background-color: transparent;
+  color: $color-ink;
+  transition: color 300ms ease;
 
-  &[data-type="accent"] {
-    background-color: $body-background-color;
-    color: $color-neutral-1000;
-    letter-spacing: 5px;
-    outline: 1px solid black;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: $color-ink;
+    transform: translateY(101%);
+    transition: transform 350ms $ease-in-out;
+  }
 
-    &:is(:hover, :focus) {
-      background-color: $button-accent-background-hover;
-      color: $button-accent-color-hover;
+  &:is(:hover, :focus-visible) {
+    color: $color-paper;
+
+    &::before {
+      transform: none;
     }
   }
 
   &[data-type="primary"] {
-    background-color: $button-primary-background;
-    color: $button-primary-color;
+    background-color: $color-ink;
+    color: $color-paper;
 
-    &:is(:hover, :focus) {
-      background-color: $button-primary-background-hover;
-      color: $button-primary-color-hover;
+    &::before {
+      background-color: $color-tape;
     }
+
+    &:is(:hover, :focus-visible) {
+      color: #000;
+    }
+  }
+
+  &[data-size="full"] {
+    width: 100%;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Big text link with a circled arrow — the "Explore" button.
+.arrow-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  line-height: 1;
+  text-decoration: none;
+  background: none;
+  border: 0;
+  color: $color-ink;
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 1.25em;
+    height: 1.25em;
+    border: 2px solid $color-ink;
+    border-radius: 50%;
+    overflow: hidden;
+    transition: background-color 300ms ease, color 300ms ease;
+
+    svg {
+      width: 0.7em;
+      height: 0.7em;
+      transition: transform 400ms $ease-out;
+    }
+  }
+
+  &:is(:hover, :focus-visible) &__icon {
+    background-color: $color-ink;
+    color: $color-paper;
+
+    svg {
+      animation: arrow-loop 500ms $ease-in-out;
+    }
+  }
+
+  &[data-size="small"] {
+    font-size: 1.25rem;
+  }
+}
+
+@keyframes arrow-loop {
+  49% {
+    transform: translateX(120%);
+  }
+  50% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  51% {
+    opacity: 1;
+  }
+}
+
+// Underline that draws in from the left.
+.link-line {
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat;
+  transition: background-size 350ms $ease-out;
+
+  &:is(:hover, :focus-visible, [aria-current="page"]) {
+    background-size: 100% 2px;
   }
 }

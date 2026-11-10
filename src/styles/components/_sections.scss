@@ -1,0 +1,64 @@
+@use "../abstracts" as *;
+
+.eyebrow {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-block-end: clamp(2rem, 5vw, 3.5rem);
+
+  &__title {
+    font-size: clamp(2.5rem, 7.5vw, 6rem);
+    font-weight: $font-weight-bold;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+  }
+}
+
+.lede {
+  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  line-height: 1.35;
+  max-width: 34ch;
+}
+
+.prose {
+  max-width: 56ch;
+
+  > * + * {
+    margin-block-start: 1em;
+  }
+}
+
+// Marker-pen word with the orange highlighter swipe from the Ink Mode button.
+.marker {
+  position: relative;
+  isolation: isolate;
+  font-family: $font-family-accent;
+  font-weight: 400;
+  letter-spacing: 0;
+  white-space: nowrap;
+
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 12% -4% 8% -4%;
+    background-color: $color-highlight;
+    border-radius: 1.2em 0.25em 0.9em 0.3em;
+    transform: rotate(-1.5deg) scaleX(0);
+    transform-origin: left;
+    transition: transform 700ms $ease-in-out 300ms;
+  }
+
+  .is-inview &::before,
+  html:not(.js) &::before {
+    transform: rotate(-1.5deg);
+  }
+}

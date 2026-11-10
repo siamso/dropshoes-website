@@ -6,10 +6,16 @@ $active-theme: $dark;
 $enable-media-query-dark-mode: false;
 
 // Contextual
-$color-text-default: $color-neutral-000;
-$color-background-default: $color-accent-100;
-$color-text-interactive-default: $color-neutral-000;
-$color-text-interactive-hover: $color-primary-400;
+$color-ink: var(--clr-ink);
+$color-paper: var(--clr-bg);
+$color-tape: var(--clr-tape);
+$color-muted: var(--clr-muted);
+$color-highlight: var(--clr-highlight);
+
+$color-text-default: $color-ink;
+$color-background-default: $color-paper;
+$color-text-interactive-default: $color-ink;
+$color-text-interactive-hover: $color-ink;
 
 // set to 0 to disable
 $letter-spacing-loose: 0;
@@ -44,7 +50,7 @@ $link-color: $color-text-interactive-default;
 $link-color-hover: $color-text-interactive-hover;
 
 $heading-font-family: $font-family-base;
-$heading-color-default: $color-neutral-900;
+$heading-color-default: $color-ink;
 $heading-font-weight: $font-weight-bold;
 $heading-letter-spacing: $letter-spacing-loose;
 $heading-line-height: 1.1;
@@ -64,7 +70,7 @@ $flex-group-gap: $size-4;
 $hero-padding-block: clamp(15rem, 15vh, 20rem);
 $section-padding-block: clamp(5rem, 10vh, 6rem);
 
-$container-min-margin-inline: $size-4;
+$container-min-margin-inline: var(--gutter);
 $container-max-width: 75rem;
 $container-max-width-narrow: 40rem;
 $container-max-width-medium: 64rem;
@@ -88,11 +94,11 @@ $navigation-font-family: $body-font-family;
 $navigation-font-weight: $body-font-weight;
 
 // site footer
-$footer-background-color: $color-neutral-900;
-$footer-text-color: $color-primary-900;
-$footer-link-color: $color-neutral-100;
-$footer-link-color-hover: $color-primary-200;
-$footer-link-font-family: $font-family-accent;
+$footer-background-color: $color-ink;
+$footer-text-color: $color-paper;
+$footer-link-color: $color-paper;
+$footer-link-color-hover: $color-tape;
+$footer-link-font-family: $font-family-base;
 $footer-link-text-decoration: none;
 
 // buttons
@@ -100,9 +106,13 @@ $button-font-family: $body-font-family;
 $button-font-size: $font-size-400;
 $button-font-weight: $font-weight-bold;
 $button-text-transform: uppercase;
-$button-padding: 0.75em 2em;
+$button-padding: 1.1em 2em;
 $button-border: 0;
-$button-border-radius: $border-radius-1;
+$button-border-radius: 0;
+
+// motion
+$ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+$ease-in-out: cubic-bezier(0.7, 0, 0.2, 1);
 
 $button-accent-color: $color-neutral-100;
 $button-accent-background: $color-accent-400;

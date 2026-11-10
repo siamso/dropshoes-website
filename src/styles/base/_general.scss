@@ -1,5 +1,11 @@
 @use "../abstracts/" as *;
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--topbar-h) + 1rem);
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   font-family: $body-font-family;
   font-weight: $body-font-weight;
@@ -8,6 +14,14 @@ body {
   background-color: $body-background-color;
   line-height: $body-line-height;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  padding-block-start: var(--topbar-h);
+  min-height: 70vh;
+  // the tilted tape is slightly wider than the page
+  overflow-x: clip;
 }
 
 a {
@@ -16,4 +30,44 @@ a {
 
 a:is(:hover, :focus) {
   color: $link-color-hover;
+}
+
+button {
+  color: inherit;
+  cursor: pointer;
+}
+
+img {
+  height: auto;
+}
+
+ul[role="list"] {
+  list-style: none;
+}
+
+::selection {
+  background-color: $color-tape;
+  color: #000;
+}
+
+:focus-visible {
+  outline: 2px solid $color-ink;
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 300;
+  padding: 0.75rem 1rem;
+  background-color: $color-tape;
+  color: #000;
+  font-weight: $font-weight-bold;
+  transform: translateY(-200%);
+
+  &:focus {
+    transform: none;
+    color: #000;
+  }
 }

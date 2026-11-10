@@ -1,74 +1,90 @@
 ---
-
+const trail = Array.from({ length: 20 });
 ---
 
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
-<div class="circle" data-cursor></div>
+<div class="cursor" data-cursor-root aria-hidden="true">
+  {trail.map(() => <div class="circle" data-cursor />)}
+</div>
 
 <style lang="scss">
-	.circle {
-		width: 24px;
-		height: 24px;
-		position: absolute;
-		background-color: black;  // Reduced opacity
-		pointer-events: none;
-		border-radius: 50%;
-		top: 0;
-		z-index: 100; // Keeps blending effect // Smooth out edges with a blur effect
-	}
+  // The whole trail is blended as one layer, so it stays visible on the cream
+  // page, on photos and in Ink Mode alike.
+  .cursor {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+    pointer-events: none;
+    mix-blend-mode: difference;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 300ms ease, visibility 0s 300ms;
+
+    &.is-active {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 300ms ease;
+    }
+  }
+
+  .circle {
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    width: 24px;
+    height: 24px;
+    background-color: #fff;
+    border-radius: 50%;
+    will-change: transform;
+  }
 </style>
 
 <script>
-const circles = document.querySelectorAll('[data-cursor]');
+  const root = document.querySelector<HTMLElement>("[data-cursor-root]")!;
+  const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-circles.forEach((circle) => {
-	circle.xPos = 0;
-	circle.yPos = 0;
-});
+  if (!fine || reduced) {
+    root.remove();
+  } else {
+    const circles = [...root.querySelectorAll<HTMLElement>("[data-cursor]")];
+    const points = circles.map(() => ({ x: 0, y: 0 }));
+    const mouse = { x: 0, y: 0 };
+    let grow = 1;
+    let targetGrow = 1;
+    let started = false;
 
-const moves = { x: 0, y: 0};
+    window.addEventListener("mousemove", (event) => {
+      mouse.x = event.clientX;
+      mouse.y = event.clientY;
+      if (!started) {
+        started = true;
+        points.forEach((point) => Object.assign(point, mouse));
+        root.classList.add("is-active");
+      }
+      const target = event.target as Element | null;
+      targetGrow = target?.closest("a, button, summary, label, input, select, [data-cursor-grow]") ? 2.4 : 1;
+    });
 
-window.addEventListener('mousemove', (event) => {
-	moves.x = event.clientX,
-	moves.y = event.clientY;
-});
+    document.addEventListener("mouseleave", () => root.classList.remove("is-active"));
+    document.addEventListener("mouseenter", () => started && root.classList.add("is-active"));
 
-(function animatedCursor() {
-	let x = moves.x + window.pageXOffset;
-	let y = moves.y + window.pageYOffset;
+    (function animatedCursor() {
+      let x = mouse.x;
+      let y = mouse.y;
+      grow += (targetGrow - grow) * 0.18;
 
-	circles.forEach((circle, index) => {
-		circle.style.left = x - 12 + 'px';
-		circle.style.top = y - 12 + 'px';
-		circle.style.scale = (circles.length - index) / circles.length
-		circle.xPos = x;
-		circle.yPos = y;
+      circles.forEach((circle, index) => {
+        const scale = ((circles.length - index) / circles.length) * (index === 0 ? grow : 1);
+        circle.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+        points[index].x = x;
+        points[index].y = y;
 
-		const nextCircle = circles[index + 1] || circles[0];
-		x += (nextCircle.xPos - x) * 0.4;
-		y += (nextCircle.yPos - y) * 0.4;
-	})
+        const next = points[index + 1] || points[0];
+        x += (next.x - x) * 0.4;
+        y += (next.y - y) * 0.4;
+      });
 
-	requestAnimationFrame(animatedCursor);
-
-}());
-
+      requestAnimationFrame(animatedCursor);
+    })();
+  }
 </script>

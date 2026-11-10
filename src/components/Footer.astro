@@ -1,4 +1,220 @@
 ---
-
+import Icon from "./Icon.astro";
+const year = new Date().getFullYear();
+const columns = [
+  {
+    title: "Shop",
+    links: [
+      { href: "/shop", label: "All shoes" },
+      { href: "/shop?category=women", label: "Women" },
+      { href: "/shop?category=men", label: "Men" },
+    ],
+  },
+  {
+    title: "Brand",
+    links: [
+      { href: "/collection", label: "Collection" },
+      { href: "/about", label: "About" },
+    ],
+  },
+  {
+    title: "Help",
+    links: [
+      { href: "/about#shipping", label: "Shipping" },
+      { href: "/about#returns", label: "Returns" },
+      { href: "/about#sizing", label: "Sizing" },
+    ],
+  },
+];
 ---
-<footer></footer>
+
+<footer class="site-footer">
+  <div class="container inner">
+    <div class="top">
+      <div class="newsletter" data-reveal>
+        <h2>Get the drop<br />before it drops.</h2>
+        <p>One email when a new batch lands. Nothing else.</p>
+        <form data-newsletter novalidate>
+          <label class="visually-hidden" for="newsletter-email">Email address</label>
+          <input id="newsletter-email" type="email" name="email" placeholder="you@email.com" autocomplete="email" required />
+          <button type="submit" aria-label="Sign up"><Icon name="arrow-right" /></button>
+        </form>
+        <p class="status" role="status" data-newsletter-status></p>
+      </div>
+
+      <nav class="columns" aria-label="Footer">
+        {
+          columns.map((column, index) => (
+            <div data-reveal style={`--d: ${index * 90 + 100}ms`}>
+              <h3 class="eyebrow">{column.title}</h3>
+              <ul role="list">
+                {column.links.map((link) => (
+                  <li>
+                    <a class="link-line" href={link.href}>
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+
+    <p class="wordmark" aria-hidden="true" data-reveal="fade">
+      {"Dropshoes".split("").map((letter, index) => <span style={`--i: ${index}`}>{letter}</span>)}
+    </p>
+
+    <div class="bottom">
+      <p>© {year} Dropshoes. All rights reserved.</p>
+      <a class="link-line" href="#top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<style lang="scss">
+  @use "../styles/abstracts" as *;
+
+  .site-footer {
+    margin-block-start: clamp(4rem, 10vw, 8rem);
+    padding-block: clamp(3rem, 8vw, 6rem) 1.5rem;
+    overflow: hidden;
+  }
+
+  .inner {
+    container-type: inline-size;
+  }
+
+  .top {
+    display: grid;
+    gap: 3rem;
+
+    @include mq(large) {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+
+  .newsletter {
+    h2 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: bold;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-block-end: 1rem;
+    }
+
+    form {
+      display: flex;
+      max-width: 26rem;
+      margin-block-start: 1.5rem;
+      border-block-end: 2px solid currentColor;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      padding: 0.75rem 0;
+      background: none;
+      border: 0;
+      color: inherit;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    form:focus-within {
+      box-shadow: 0 3px 0 var(--clr-tape);
+    }
+
+    button {
+      display: grid;
+      place-items: center;
+      width: 3rem;
+      background: none;
+      border: 0;
+      font-size: 1.5rem;
+      transition: transform 300ms $ease-out;
+
+      &:is(:hover, :focus-visible) {
+        transform: translateX(6px);
+      }
+    }
+
+    .status {
+      min-height: 1.5em;
+      margin-block-start: 0.75rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+
+    h3 {
+      opacity: 0.6;
+      margin-block-end: 1rem;
+    }
+
+    ul {
+      display: grid;
+      gap: 0.4rem;
+    }
+  }
+
+  .wordmark {
+    display: flex;
+    justify-content: space-between;
+    margin-block: clamp(2rem, 6vw, 4rem) 1rem;
+    font-family: $font-family-accent;
+    // sized from the container so the nine letters always span it exactly
+    font-size: 13cqi;
+    line-height: 1;
+    text-transform: uppercase;
+    user-select: none;
+
+    span {
+      display: inline-block;
+      transition: transform 800ms $ease-out, color 200ms ease;
+      transition-delay: calc(var(--i) * 50ms), 0s;
+
+      &:hover {
+        color: var(--clr-tape);
+      }
+    }
+  }
+
+  :global(.js) .wordmark:not(.is-inview) span {
+    transform: translateY(60%) rotate(8deg);
+  }
+
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    padding-block-start: 1.5rem;
+    border-block-start: 2px solid currentColor;
+    font-size: 0.875rem;
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-newsletter]");
+  const status = document.querySelector<HTMLElement>("[data-newsletter-status]");
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const input = form.elements.namedItem("email") as HTMLInputElement;
+    if (!input.checkValidity()) {
+      status!.textContent = "That email doesn't look right — try again?";
+      input.focus();
+      return;
+    }
+    status!.textContent = "You're on the list. See you at the next drop.";
+    form.reset();
+  });
+</script>

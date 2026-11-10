@@ -1,103 +1,168 @@
 ---
+import ProductCard from "./ProductCard.astro";
+import Icon from "./Icon.astro";
+import type { Product } from "../data/products";
 
+interface Props {
+  products: Product[];
+}
+const { products } = Astro.props;
 ---
-<div class="card-slider">
-	<div class="slider__inner">
-		<div class="slider__img">
-			<div  style="background-color: red;"  class="div">h1</div>
-		</div>
-		<div class="slider__img">
-			<div  style="background-color: blue;"  class="div">h1</div>
-		</div>
-		<div  class="slider__img">
-			<div style="background-color: green;" class="div">h1</div>
-		</div>
-		<div class="slider__img">
-			<div style="background-color: purple;"  class="div">h1</div>
-		</div>
-		<div class="slider__img">
-			<div style="background-color: yellow;"  class="div">h1</div>
-		</div>
-		<div class="slider__img">
-			<div style="background-color: skyblue;"  class="div">h1</div>
-		</div>
-		<div class="slider__img">
-			<div style="background-color: brown;" class="div">h1</div>
-		</div>
-	</div>
-</div>
-<style lang="scss">
-    .card-slider{
-		position: relative;
-		margin: 20px; //change
-		border: 1px solid black; //change
-		width: 80%;
-		height: 200px;
-		overflow: hidden;
-		.slider__inner{
-			position: absolute;
-			top: 0;
-			left: 0;
-			display: flex;
-			width: 200%;
-			height: 100%;
-			gap: 1rem;
-			pointer-events: none;
-			transition: 0s ease-in;
-		}
-		.slider__img{
 
-			.div{
-				color: WHITE;
-				height: 200px;
-				width: 300px;
-			}
-		}
-	}
-</style>
-<script>
-
-    const slider = document.querySelector('.card-slider');
-    const innerSlider = document.querySelector('.slider__inner');
-    let pressed = false;
-    let startx;
-    let x;
-    
-    slider.addEventListener('mousedown',(e) => {
-        pressed = true
-        startx = e.offsetX - innerSlider.offsetLeft;
-        console.log("🚀 ~ slider.addEventListener ~ startx:", startx)
-        slider.style.cursor = 'grabbing'
-    })
-    
-    slider.addEventListener('mouseenter',(e) => {
-        slider.style.cursor = 'grab'
-    })
-    
-    slider.addEventListener('mouseup',(e) => {
-        pressed = false
-        slider.style.cursor = 'grab'
-    })
-    
-    slider.addEventListener('mousemove', (e) => {
-        if(!pressed) return;
-        e.preventDefault();
-        x = e.offsetX
-    
-        innerSlider.style.left = `${x - startx}px`;
-    
-        checkBoundary()
-    })
-    
-    function checkBoundary(){
-        let outer = slider.getBoundingClientRect()
-        let inner = innerSlider.getBoundingClientRect()
-    
-        if(parseInt(innerSlider.style.left) > 0){
-            innerSlider.style.left = '0px'
-        }else if(inner.right < outer.right){
-            innerSlider.style.left = `-${inner.width - outer.width}px`
-        }
+<div class="card-slider" data-card-slider>
+  <ul class="slider__inner" role="list" tabindex="0" aria-label="Products, scroll or drag sideways">
+    {
+      products.map((product, index) => (
+        <li class="slide">
+          <ProductCard {product} {index} reveal={false} />
+        </li>
+      ))
     }
+  </ul>
+  <div class="controls">
+    <div class="progress" aria-hidden="true"><span></span></div>
+    <button type="button" data-dir="-1" aria-label="Previous products"><Icon name="arrow-left" /></button>
+    <button type="button" data-dir="1" aria-label="Next products"><Icon name="arrow-right" /></button>
+  </div>
+</div>
+
+<style lang="scss">
+  @use "../styles/abstracts" as *;
+
+  .card-slider {
+    position: relative;
+  }
+
+  .slider__inner {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 6px;
+    scrollbar-width: none;
+    // room for the hover lift and offset shadow
+    padding: 6px 8px 8px 6px;
+    margin: -6px -8px -8px -6px;
+    cursor: grab;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &.is-dragging {
+      cursor: grabbing;
+      scroll-snap-type: none;
+      user-select: none;
+
+      :global(a) {
+        pointer-events: none;
+      }
+    }
+  }
+
+  .slide {
+    flex: 0 0 min(78%, 21rem);
+    scroll-snap-align: start;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-block-start: 2rem;
+
+    button {
+      display: grid;
+      place-items: center;
+      width: 3rem;
+      height: 3rem;
+      border: 2px solid var(--clr-ink);
+      border-radius: 50%;
+      background: transparent;
+      font-size: 1.25rem;
+      transition: background-color 250ms ease, color 250ms ease, opacity 250ms ease;
+
+      &:is(:hover, :focus-visible):not(:disabled) {
+        background-color: var(--clr-ink);
+        color: var(--clr-bg);
+      }
+
+      &:disabled {
+        opacity: 0.3;
+        cursor: default;
+      }
+    }
+  }
+
+  .progress {
+    flex: 1;
+    height: 2px;
+    margin-inline-end: 1rem;
+    background-color: color-mix(in srgb, var(--clr-ink) 20%, transparent);
+
+    span {
+      display: block;
+      height: 100%;
+      background-color: var(--clr-ink);
+      transform-origin: left;
+      transform: scaleX(var(--progress, 0.2));
+      transition: transform 150ms linear;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-card-slider]").forEach((slider) => {
+    const track = slider.querySelector<HTMLElement>(".slider__inner")!;
+    const buttons = slider.querySelectorAll<HTMLButtonElement>("button[data-dir]");
+
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      const visible = track.clientWidth / track.scrollWidth;
+      const progress = max > 0 ? visible + (1 - visible) * (track.scrollLeft / max) : 1;
+      slider.style.setProperty("--progress", String(progress));
+      buttons[0].disabled = track.scrollLeft <= 2;
+      buttons[1].disabled = track.scrollLeft >= max - 2;
+    };
+
+    buttons.forEach((button) =>
+      button.addEventListener("click", () => {
+        const slide = track.querySelector<HTMLElement>(".slide")!;
+        const step = slide.offsetWidth + 24;
+        track.scrollBy({ left: step * Number(button.dataset.dir), behavior: "smooth" });
+      }),
+    );
+
+    // Drag to scroll with the mouse (touch already scrolls natively).
+    let startX = 0;
+    let startScroll = 0;
+    let dragging = false;
+
+    track.addEventListener("pointerdown", (event) => {
+      if (event.pointerType !== "mouse" || event.button !== 0) return;
+      dragging = true;
+      startX = event.clientX;
+      startScroll = track.scrollLeft;
+    });
+
+    window.addEventListener("pointermove", (event) => {
+      if (!dragging) return;
+      const delta = event.clientX - startX;
+      if (Math.abs(delta) > 5) track.classList.add("is-dragging");
+      track.scrollLeft = startScroll - delta;
+    });
+
+    const stop = () => {
+      if (!dragging) return;
+      dragging = false;
+      // let the click that ends a drag be swallowed before re-enabling links
+      setTimeout(() => track.classList.remove("is-dragging"));
+    };
+    window.addEventListener("pointerup", stop);
+    window.addEventListener("pointercancel", stop);
+
+    track.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+  });
 </script>
-    
